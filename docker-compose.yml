@@ -1,0 +1,14 @@
+services:
+    meteor1411:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: meteor1411
+        working_dir: /app
+        command: bash
+        stdin_open: true
+        tty: true
+        volumes:
+            - ./:/app
+        ports:
+            - "3000:3000"
