@@ -95,7 +95,41 @@ http://localhost:3000
 
 The Make Me a Hanzi editor interface should load.
 
-## Step 6: Using Meteor Methods from Browser Console
+## Step 6: Using the Application
+
+### Keyboard Shortcuts
+
+The editor require following keyboard shortcuts for navigation:
+
+#### Character Navigation
+
+-   **`a`** : Show previous character
+-   **`A`** : Show previous **unfinished** character
+-   **`q`** : Show previous **completed** character
+-   **`d`** : Show next character
+-   **`D`** : Show next **unfinished** character
+-   **`e`** : Show next **completed** character
+
+#### Workflow Navigation
+
+-   **`r`** : Reset current operation
+-   **`s`** : Proceed to the next step
+-   **`w`** : Go back to the previous step
+
+### Character Completion Workflow
+
+Completing a character involves six steps:
+
+1. **Path** - Define the basic outline/paths from font data
+2. **Bridges** - Connect stroke segments
+3. **Strokes** - Define individual strokes
+4. **Analysis** - Analyze stroke relationships
+5. **Order** - Define stroke order
+6. **Verified** - Mark as complete and verified
+
+Use **`s`** to move forward through these steps and **`w`** to go back.
+
+## Step 7: Using Meteor Methods from Browser Console
 
 Open your browser's Developer Console (F12) and you can execute various commands:
 
@@ -148,7 +182,7 @@ Meteor.call("restore", (err, res) => console.log(err || res));
 
 Output: `"Restore started from /app/server/backup - check server console for progress"`
 
-## Monitoring Progress
+## Step 8: Monitoring Progress
 
 All detailed progress logs appear in the **Meteor server console** (the terminal where you ran `meteor`).
 
