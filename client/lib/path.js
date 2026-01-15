@@ -80,7 +80,7 @@ Template.path_stage.helpers({
 	options: () => [
 		{ font: "arphic/gkai00mp.ttf", label: "AR PL KaitiM GB" },
 		{ font: "arphic/UKaiCN.ttf", label: "AR PL UKai" },
-		{ font: "foundertype/FZKai-Z03S.ttf", label: "FZKai-Z03S" },
+		{ font: "foundertype/FZKai-Z03S_Modified.ttf", label: "FZKai-Z03S" },
 		{ font: "foundertype/FZKai-Z03_GB18030.ttf", label: "FZKai-Z03_GB18030" },
 	],
 });
