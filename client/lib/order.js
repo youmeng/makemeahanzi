@@ -264,9 +264,9 @@ const maybeReverse = (median, match) => {
 	let diff2 = [1, -2];
 	if (match) {
 		const target = match.median;
-		// If the reference median has a sub-baseline endpoint (y < 0), it was
-		// produced by the Voronoi sub-baseline bug and cannot be trusted as a
-		// direction reference. Fall back to the default [1, -2] heuristic.
+		// If the reference median has a strictly sub-baseline endpoint (y < 0),
+		// it was produced by the Voronoi artifact bug and cannot be trusted.
+		// Fall back to the default [1, -2] heuristic.
 		const hasSubBaseline = target[0][1] < 0 || target[target.length - 1][1] < 0;
 		if (!hasSubBaseline) {
 			diff2 = Point.subtract(target[target.length - 1], target[0]);
@@ -294,14 +294,19 @@ class OrderStage extends AbstractStage {
 		super("order");
 		this.medians = glyph.stages.strokes.raw.map(median_util.findStrokeMedian);
 		this.strokes = glyph.stages.strokes.corrected;
-		// Always recompute medians from raw strokes rather than using stored ones.
-		// Stored medians can be stale (e.g. saved during a previous buggy run).
-		// Direction is preserved by orienting fresh medians to match the stored
-		// median's direction via maybeReverse, which ignores sub-baseline references.
+		// Always recompute medians from raw strokes. Stored medians can be stale
+		// from previous buggy runs. Direction reference:
+		// - If the fresh median has a sub-baseline endpoint (y<0), the stored
+		//   reference cannot be trusted (also likely stale). Use the [1,-2]
+		//   fallback in maybeReverse by passing null.
+		// - Otherwise use the stored median as direction reference.
 		this.adjusted =
 			(glyph.stages.order || null) &&
 			glyph.stages.order.map((x) => {
-				return Object.assign({}, x, { median: maybeReverse(this.medians[x.stroke].slice(), { median: x.median }) });
+				const fresh = this.medians[x.stroke].slice();
+				const freshHasSubBaseline = fresh[0][1] < 0 || fresh[fresh.length - 1][1] < 0;
+				const ref = freshHasSubBaseline ? null : { median: x.median };
+				return Object.assign({}, x, { median: maybeReverse(fresh, ref) });
 			});
 
 		const tree = decomposition_util.convertDecompositionToTree(glyph.stages.analysis.decomposition);
