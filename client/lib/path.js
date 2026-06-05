@@ -27,7 +27,7 @@ class PathStage extends AbstractStage {
 		Session.set("stage.paths", [{ d: d, fill: "gray", stroke: "gray" }]);
 		Session.set(
 			"stage.status",
-			d ? [{ cls: "success", message: "Got path data." }] : [{ cls: "error", message: this.error }]
+			d ? [{ cls: "success", message: "Got path data." }] : [{ cls: "error", message: this.error }],
 		);
 		Session.set("stages.path.alternative", this.alternative);
 	}
@@ -82,6 +82,7 @@ Template.path_stage.helpers({
 		{ font: "arphic/UKaiCN.ttf", label: "AR PL UKai" },
 		{ font: "foundertype/FZKai-Z03S_Modified.ttf", label: "FZKai-Z03S" },
 		{ font: "foundertype/FZKai-Z03_GB18030.ttf", label: "FZKai-Z03_GB18030" },
+		{ font: "microsoft/simkai.ttf", label: "SimKai" },
 	],
 });
 
