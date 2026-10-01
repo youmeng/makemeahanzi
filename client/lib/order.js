@@ -296,7 +296,15 @@ const scoreStrokes = (stroke1, stroke2) => {
 class OrderStage extends AbstractStage {
 	constructor(glyph) {
 		super("order");
-		this.medians = glyph.stages.strokes.raw.map(median_util.findStrokeMedian);
+		this.medians = glyph.stages.strokes.raw.map((stroke, index) => {
+			const median = median_util.findStrokeMedian(stroke);
+			if (!median) {
+				console.error(
+					`Failed to compute median for stroke ${index} in character '${glyph.character}'. Stroke data may be corrupted.`,
+				);
+			}
+			return median;
+		});
 		this.strokes = glyph.stages.strokes.corrected;
 		// Always recompute medians from raw strokes. Stored medians can be stale
 		// from previous buggy runs. Use the stored median as the direction
@@ -306,10 +314,16 @@ class OrderStage extends AbstractStage {
 		// even when one tip has a sub-baseline artifact (e.g. 提 strokes).
 		this.adjusted =
 			(glyph.stages.order || null) &&
-			glyph.stages.order.map((x) => {
-				const fresh = this.medians[x.stroke].slice();
-				return Object.assign({}, x, { median: maybeReverse(fresh, { median: x.median }) });
-			});
+			glyph.stages.order
+				.map((x) => {
+					if (!this.medians[x.stroke]) {
+						console.warn(`Skipping stroke ${x.stroke} - no valid median computed`);
+						return null;
+					}
+					const fresh = this.medians[x.stroke].slice();
+					return Object.assign({}, x, { median: maybeReverse(fresh, { median: x.median }) });
+				})
+				.filter((x) => x !== null);
 
 		const tree = decomposition_util.convertDecompositionToTree(glyph.stages.analysis.decomposition);
 		this.tree = augmentTreeWithBoundsData(tree, [
